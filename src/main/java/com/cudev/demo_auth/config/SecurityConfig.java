@@ -54,10 +54,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/orders/update-repair-oder/**").hasAnyAuthority("ROLE_REPAIR")
                         .requestMatchers("api/roles/**", "/api/menus/**").hasAnyAuthority("ROLE_ROOT")
                         .anyRequest().authenticated())
-//                .exceptionHandling(exception -> exception
-//                        .authenticationEntryPoint(authenticationEntryPoint)
-//                        .accessDeniedHandler(accessDeniedHandler)
-//                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session
                 )
