@@ -48,7 +48,16 @@ public class AuthenticationService {
                 User userRepo = repo.findByUserName(request.getUsername()).orElseThrow(() -> new NotFoundException("User not found"));
 
                 if(userRepo.getStatusUser() == 1) {
-                    LoginResponse loginResponse = new LoginResponse(jwtUtil.generateToken(request.getUsername()), toUserForLogin(userRepo));
+
+                    UserForLogin userForLogin = toUserForLogin(userRepo);
+
+                    List<String> menuNames = userForLogin.getListMenu()
+                            .stream()
+                            .map(MenuDto:: getMenuUrl)
+                            .distinct()
+                            .toList();
+
+                    LoginResponse loginResponse = new LoginResponse(jwtUtil.generateToken(request.getUsername(), userForLogin.getListRoles().stream().toList(),menuNames), userForLogin);
                     return new ReponseObject(true, "Login thành công", loginResponse);
                 }else {
                     return new ReponseObject(false, "Tài khoản đã bị khoá", null);
