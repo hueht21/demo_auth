@@ -21,6 +21,15 @@ import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final List<String> WHITELIST = List.of(
+            "/api/auth/validate",
+            "/api/login",
+            "/login-web",
+            "/api/login-web",
+            "/api/check"
+    );
+
     @Autowired
     private JWTUtil jwtUtil;
 
@@ -31,19 +40,20 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+        if (WHITELIST.contains(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
-
-        List<String> listRoles = null;
-        List<String> listMenus = null;
 
         try {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 username = jwtUtil.extractUserName(token);
-                listRoles = jwtUtil.extractRoles(token);
-                listMenus = jwtUtil.extractMenus(token);
 
             }
 
