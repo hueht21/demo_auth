@@ -57,15 +57,10 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = null;
         String username = null;
 
-        List<String> listRoles = null;
-        List<String> listMenus = null;
-
         try {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 username = jwtUtil.extractUserName(token);
-                listRoles = jwtUtil.extractRoles(token);
-                listMenus = jwtUtil.extractMenus(token);
 
             }
 

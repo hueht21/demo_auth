@@ -98,4 +98,11 @@ public class AuthenticationService {
         res.setListMenu(getMenusByUserId(user.getId()));
         return res;
     }
+
+
+    public Long getIdUserByUserName(String userName) {
+        User user = repo.findByUserName(userName)
+                .orElseThrow(() -> new RuntimeException("User not found with userName: " + userName));
+        return  user.getId();
+    }
 }
