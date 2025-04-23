@@ -17,6 +17,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
+        System.out.println(authException.getMessage());
         // Bạn có thể trả thêm message chi tiết hơn
         response.getWriter().write("{\"message\": \"Unauthorized - Token is invalid or expired\"}");
     }

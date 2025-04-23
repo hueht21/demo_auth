@@ -48,7 +48,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // Bật CORS theo cấu hình mặc định
                 .csrf(customizer -> customizer.disable()).
                 authorizeHttpRequests(request -> request
-                        .requestMatchers("api/login","/api/auth/**", "login-web", "api/login-web").permitAll()
+                        .requestMatchers("api/login","/api/auth/**", "login-web", "api/login-web", "login-auth-web", "/**/favicon.ico", "/resources/**", "/static/**", "/webjars/**"
+                                ).permitAll()
                         .requestMatchers("api/roles/**", "/api/menus/**").hasAnyAuthority("ROLE_ROOT")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
@@ -90,6 +91,7 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
 
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

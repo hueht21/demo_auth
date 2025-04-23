@@ -28,9 +28,31 @@ public class JwtFilter extends OncePerRequestFilter {
     private MyUserDetailsService myUserDetailsService;
 
 
+    private static final List<String> WHITELIST = List.of(
+            "/api/auth/validate",
+            "/api/login",
+            "/login-web",
+            "/api/login-web",
+            "/login-auth-web",
+            "/**/favicon.ico"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+
+        String path = request.getRequestURI();
+        System.out.println("Request URI: " + path);
+
+        // ✅ Bypass các URL không cần xác thực
+        if (WHITELIST.contains(path)) {
+            System.out.println("Bypass các URL không cần xác thực");
+            filterChain.doFilter(request, response);
+            System.out.print("Bypass các URL không cần xác thực\n");
+            return;
+        }
+
+        System.out.print("vào day\n");
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
@@ -65,6 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Lỗi server khi xử lý token");
         }
+
 
 
     }
