@@ -1,0 +1,76 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #ffffff; /* Nền trắng */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #333;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    background-color: #FF9800; /* Cam */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #fb8c00; /* Cam đậm */
+}
+
+.message {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.message a {
+    color: #FF9800;
+    text-decoration: none;
+    font-weight: bold;
+}

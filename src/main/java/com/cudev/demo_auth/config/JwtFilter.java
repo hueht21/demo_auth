@@ -4,10 +4,6 @@ import com.cudev.demo_auth.service.MyUserDetailsService;
 import com.cudev.demo_auth.util.JWTUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +12,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,10 +31,20 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final List<String> WHITELIST = List.of(
             "/api/auth/validate",
             "/api/login",
+            "/api/logout",
             "/login-web",
             "/api/login-web",
             "/login-auth-web",
-            "/**/favicon.ico"
+            "/favicon.ico",
+            "/login",
+            "/assets/css/icons.min.css",
+            "/assets/css/app-modern-dark.min.css",
+            "/assets/images/logo.png",
+            "/assets/js/vendor.min.js",
+            "/assets/js/app.min.js",
+            "/assets/css/icons.min.css.map",
+            "/assets/js/vendor.min.js.map",
+            "/assets/js/app.min.js.map"
     );
 
     @Override
@@ -43,12 +53,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
         System.out.println("Request URI: " + path);
-
-        // ✅ Bypass các URL không cần xác thực
         if (WHITELIST.contains(path)) {
             System.out.println("Bypass các URL không cần xác thực");
             filterChain.doFilter(request, response);
-            System.out.print("Bypass các URL không cần xác thực\n");
             return;
         }
 

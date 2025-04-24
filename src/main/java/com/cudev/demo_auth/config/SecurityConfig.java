@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.List;
 
@@ -48,9 +49,26 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults()) // Bật CORS theo cấu hình mặc định
                 .csrf(customizer -> customizer.disable()).
                 authorizeHttpRequests(request -> request
-                        .requestMatchers("api/login","/api/auth/**", "login-web", "api/login-web", "/api/check").permitAll()
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/login-web"),
+                                new AntPathRequestMatcher("/api/login"),
+                                new AntPathRequestMatcher("/api/logout"),
+                                new AntPathRequestMatcher("/login"),
+                                new AntPathRequestMatcher("/api/auth/**"),
+                                new AntPathRequestMatcher("/login-web"),
+                                new AntPathRequestMatcher("/api/login-web"),
+                                new AntPathRequestMatcher("/api/check"),
+                                new AntPathRequestMatcher("/favicon.ico"),
+                                new AntPathRequestMatcher("/login-auth-web"),
+                                new AntPathRequestMatcher("/login-check-user"),
+                                new AntPathRequestMatcher("/assets/**") // ✅ Đúng cú pháp
+                        ).permitAll()
 
-                        .requestMatchers("api/roles/**", "/api/menus/**").hasAnyAuthority("ROLE_ROOT")
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/roles/**"),
+                                new AntPathRequestMatcher("/api/menus/**")
+
+                        ).hasAnyAuthority("ROLE_ROOT")
                         .anyRequest().authenticated())
 
                 .exceptionHandling(exception -> exception
@@ -74,18 +92,18 @@ public class SecurityConfig {
         return provider;
     }
 
-//    @Bean
-//    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-//        var configuration = new org.springframework.web.cors.CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("*")); // Domain được phép
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // HTTP Methods được phép
-//        configuration.setAllowedHeaders(List.of("*")); // Headers được phép
-//        configuration.setAllowCredentials(false); // Cho phép gửi thông tin xác thực (như cookies)
-//
-//        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho tất cả các endpoint
-//        return source;
-//    }
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+        var configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*")); // Domain được phép
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // HTTP Methods được phép
+        configuration.setAllowedHeaders(List.of("*")); // Headers được phép
+        configuration.setAllowCredentials(false); // Cho phép gửi thông tin xác thực (như cookies)
+
+        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho tất cả các endpoint
+        return source;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -99,24 +117,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-        var configuration = new org.springframework.web.cors.CorsConfiguration();
-
-        // Cập nhật origin để chỉ định domain frontend
-        configuration.setAllowedOrigins(List.of("http://localhost:3006", "http://localhost:3000")); // Thay đổi domain frontend của bạn
-
-        // Cấu hình các phương thức HTTP được phép
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Cho phép tất cả các headers
-        configuration.setAllowedHeaders(List.of("*"));
-
-        // Cho phép gửi thông tin xác thực (cookies, headers Authorization...)
-        configuration.setAllowCredentials(true);
-
-        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho tất cả các endpoint
-        return source;
-    }
+//    @Bean
+//    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+//        var configuration = new org.springframework.web.cors.CorsConfiguration();
+//
+//        // Cập nhật origin để chỉ định domain frontend
+//        configuration.setAllowedOrigins(List.of("http://localhost:3006", "http://localhost:3000")); // Thay đổi domain frontend của bạn
+//
+//        // Cấu hình các phương thức HTTP được phép
+//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//
+//        // Cho phép tất cả các headers
+//        configuration.setAllowedHeaders(List.of("*"));
+//
+//        // Cho phép gửi thông tin xác thực (cookies, headers Authorization...)
+//        configuration.setAllowCredentials(true);
+//
+//        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho tất cả các endpoint
+//        return source;
+//    }
 }

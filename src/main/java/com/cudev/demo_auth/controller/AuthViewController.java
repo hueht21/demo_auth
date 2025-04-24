@@ -1,28 +1,40 @@
 package com.cudev.demo_auth.controller;
 
 
+import com.cudev.demo_auth.constant.SecurityConstants;
 import com.cudev.demo_auth.entity.User;
 import com.cudev.demo_auth.model.LoginRequest;
 import com.cudev.demo_auth.model.LoginResponse;
 import com.cudev.demo_auth.model.ReponseObject;
 import com.cudev.demo_auth.service.AuthenticationService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
+import com.cudev.demo_auth.service.MyUserDetailsService;
+import com.cudev.demo_auth.util.CookieUtil;
+import com.cudev.demo_auth.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 public class AuthViewController {
 
 
-//    @Autowired
-//    private AuthenticationService service;
+    @Autowired
+    private AuthenticationService service;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    @Autowired
+    private MyUserDetailsService myUserDetailsService;
 
 //    @RequestMapping(value = "login-web", method = RequestMethod.POST)
 //    public String loginWeb(@RequestBody @Valid LoginRequest user,
@@ -47,11 +59,46 @@ public class AuthViewController {
 //        }
 //    }
 
-    @GetMapping("/login-auth-web")
-    public String getPageLogin(Model model)
-    {
-        System.out.println("getPageLogin");
-        model.addAttribute("userlogin", new User());
-        return "login";
+
+    @RequestMapping("/login-auth-web")
+    public String loginCheckUser(@RequestParam(value = "redirect_uri", required = false) String redirectUri, HttpServletRequest request,
+                                 HttpServletResponse response) {
+
+        if (redirectUri == null || redirectUri.isEmpty()) {
+            redirectUri = CookieUtil.getCookieByName(SecurityConstants.REDIRECT_URI_KEY, request);
+        }
+
+        Optional<Cookie> cookie = CookieUtil.getCookie(request, SecurityConstants.ACCESS_TOKEN_KEY);
+
+        if (cookie.isEmpty()) {
+            return "login-auth-web";
+        }else  {
+            try{
+                String accessToken = cookie.get().getValue();
+                if(!jwtUtil.isTokenExpired(accessToken)) {
+                    // Đã login → redirect ngay về domain2
+                    String username = jwtUtil.extractUserName(accessToken);
+                    UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
+
+                    if (jwtUtil.validateToken(accessToken, userDetails)) {
+                        return "redirect:" + redirectUri + "?access_token=" + accessToken + "&userName=" + username;
+                    }else {
+                        CookieUtil.deleteCookie(request, response, SecurityConstants.ACCESS_TOKEN_KEY);
+                        CookieUtil.addCookie(response, SecurityConstants.REDIRECT_URI_KEY, redirectUri);
+                        return "login-auth-web";
+                    }
+                }else  {
+                    CookieUtil.addCookie(response, SecurityConstants.REDIRECT_URI_KEY, redirectUri);
+                    CookieUtil.deleteCookie(request, response, SecurityConstants.ACCESS_TOKEN_KEY);
+                    return "login-auth-web";
+                }
+
+            }catch (Exception e) {
+                CookieUtil.addCookie(response, SecurityConstants.REDIRECT_URI_KEY, redirectUri);
+                CookieUtil.deleteCookie(request, response, SecurityConstants.ACCESS_TOKEN_KEY);
+                return "login-auth-web";
+            }
+        }
+
     }
 }
