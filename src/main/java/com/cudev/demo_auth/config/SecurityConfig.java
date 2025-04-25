@@ -1,7 +1,10 @@
 package com.cudev.demo_auth.config;
 
+import com.cudev.demo_auth.util.CustomOAuth2FailureHandler;
+import com.cudev.demo_auth.util.CustomOAuth2SuccessHandler;
 import com.cudev.demo_auth.util.CustomAccessDeniedHandler;
 import com.cudev.demo_auth.util.CustomAuthenticationEntryPoint;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +38,11 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
+    @Autowired
+    private CustomOAuth2FailureHandler oAuth2FailureHandler;
+
+    @Autowired
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
     public SecurityConfig(UserDetailsService userDetailsService, CustomAuthenticationEntryPoint authenticationEntryPoint,
                           CustomAccessDeniedHandler accessDeniedHandler) {
@@ -52,24 +60,14 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/login-web"),
                                 new AntPathRequestMatcher("/api/login"),
-                                new AntPathRequestMatcher("/api/logout"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/logout-web"),
-                                new AntPathRequestMatcher("/api/auth/**"),
-                                new AntPathRequestMatcher("/login-web"),
                                 new AntPathRequestMatcher("/api/login-web"),
-                                new AntPathRequestMatcher("/api/check"),
                                 new AntPathRequestMatcher("/favicon.ico"),
                                 new AntPathRequestMatcher("/login-auth-web"),
-                                new AntPathRequestMatcher("/login-check-user"),
-                                new AntPathRequestMatcher("/assets/**") // ✅ Đúng cú pháp
+                                new AntPathRequestMatcher("/login/oauth2/code/google"),
+                                new AntPathRequestMatcher("/assets/**")
                         ).permitAll()
-
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/api/roles/**"),
-                                new AntPathRequestMatcher("/api/menus/**")
-
-                        ).hasAnyAuthority("ROLE_ROOT")
                         .anyRequest().authenticated())
 
                 .exceptionHandling(exception -> exception
@@ -80,6 +78,10 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).
+                oauth2Login(oauth -> oauth
+                        .successHandler(customOAuth2SuccessHandler)
+                        .failureHandler(oAuth2FailureHandler)
+                ).
                 build();
     }
 

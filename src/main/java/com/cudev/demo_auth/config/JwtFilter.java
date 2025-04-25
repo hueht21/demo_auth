@@ -38,7 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/favicon.ico",
             "/login",
             "/logout-web",
-            "/assets/css/app-modern-dark.min.css"
+            "/login/oauth2/code/google",
+            "/assets/css/login.css"
     );
 
     @Override

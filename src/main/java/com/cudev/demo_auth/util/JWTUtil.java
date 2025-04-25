@@ -19,18 +19,6 @@ import java.util.function.Function;
 public class JWTUtil {
     private String secretkey = "v6s3pYmVhSePbK+G(D?A/x8u5r1nXjUg";
 
-
-    public JWTUtil() {
-
-//        try {
-//            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-//            SecretKey sk = keyGen.generateKey();
-////            secretkey = Base64.getEncoder().encodeToString(sk.getEncoded());
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-    }
-
     public String generateToken(String username, List<String> roles, List<String> menus) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
@@ -49,9 +37,6 @@ public class JWTUtil {
     }
 
     private SecretKey getKey() {
-//        byte[] keyBytes = Decoders.BASE64.decode(secretkey);
-//        return Keys.hmacShaKeyFor(keyBytes);
-
         return Keys.hmacShaKeyFor(secretkey.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -59,17 +44,6 @@ public class JWTUtil {
         // extract the username from jwt token
         return extractClaim(token, Claims::getSubject);
     }
-
-    public List<String> extractRoles(String token) {
-        Claims claims = extractAllClaims(token);
-        return (List<String>) claims.get("roles");
-    }
-
-    public List<String> extractMenus(String token) {
-        Claims claims = extractAllClaims(token);
-        return (List<String>) claims.get("menus");
-    }
-
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);

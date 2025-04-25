@@ -45,6 +45,13 @@
 
     <p class="message">Chưa có tài khoản? <a href="#">Đăng ký</a></p>
 
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/oauth2/authorization/google" id="googleLoginBtn">
+            <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+                 alt="Sign in with Google" />
+        </a>
+    </div>
+
 </div>
 
 <!-- jQuery -->
@@ -95,6 +102,11 @@
                 }
             });
         });
+
+        // $('button#GOOGLE_LOGIN_BTN').click(function(){
+        //     console.log("vào google login" + redirectUrl);
+        // 	window.location.href = "base_url" + '/oauth2/authorize/google?redirect_uri=' + redirectUrl;
+        // });
     });
 </script>
 </body>
