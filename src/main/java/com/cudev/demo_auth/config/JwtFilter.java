@@ -38,14 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/favicon.ico",
             "/login",
             "/logout-web",
-            "/assets/css/icons.min.css",
-            "/assets/css/app-modern-dark.min.css",
-            "/assets/images/logo.png",
-            "/assets/js/vendor.min.js",
-            "/assets/js/app.min.js",
-            "/assets/css/icons.min.css.map",
-            "/assets/js/vendor.min.js.map",
-            "/assets/js/app.min.js.map"
+            "/assets/css/app-modern-dark.min.css"
     );
 
     @Override
