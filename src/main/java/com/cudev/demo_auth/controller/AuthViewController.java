@@ -11,6 +11,7 @@ import com.cudev.demo_auth.service.MyUserDetailsService;
 import com.cudev.demo_auth.util.CookieUtil;
 import com.cudev.demo_auth.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ValidationException;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -100,5 +102,19 @@ public class AuthViewController {
             }
         }
 
+    }
+
+
+    @RequestMapping("/logout-web")
+    public String loginOut(@RequestParam(value = "uri", required = false) String redirectUri, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            System.out.println("Đã call logout");
+            CookieUtil.deleteCookie(request,response, SecurityConstants.ACCESS_TOKEN_KEY);
+
+            return "redirect:" + redirectUri;
+
+        } catch (ValidationException ex) {
+            return "redirect:" + "http://localhost:3006/home";
+        }
     }
 }

@@ -82,15 +82,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<ReponseObject> loginOut(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            CookieUtil.deleteCookie(request,response, SecurityConstants.ACCESS_TOKEN_KEY);
-            return new ResponseEntity<ReponseObject>(new ReponseObject(true, "Thành công", ""), HttpStatus.OK);
-        } catch (ValidationException ex) {
-            return new ResponseEntity<ReponseObject>(new ReponseObject(false, "Thất bại", ""), HttpStatus.BAD_REQUEST);
-        }
-    }
+
 
 //    @PostMapping("/login-web")
 //    public String loginWeb(@RequestBody @Valid LoginRequest user, HttpServletResponse response) {

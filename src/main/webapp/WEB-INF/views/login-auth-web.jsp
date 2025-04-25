@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
@@ -9,12 +8,24 @@
     <title>Đăng nhập</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/assets/css/login.css">
+    <style>
+        #loginFail {
+            display: none;
+            color: red;
+            margin-top: 10px;
+        }
+
+        #loadingSpinner {
+            display: none;
+            margin-top: 10px;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
 <div class="login-container">
 
     <h2>Đăng nhập</h2>
-    <div id="loginFail">Sai tài khoản hoặc mật khẩu</div>
     <form:form class="login-form">
         <div class="input-group">
             <label for="userName">Tài khoản</label>
@@ -29,19 +40,12 @@
         <button type="button" id="LOGIN_BTN">Đăng nhập</button>
     </form:form>
 
+    <div id="loadingSpinner">Đang xử lý đăng nhập...</div>
+    <div id="loginFail">Sai tài khoản hoặc mật khẩu</div>
 
     <p class="message">Chưa có tài khoản? <a href="#">Đăng ký</a></p>
 
 </div>
-
-<%--<script>--%>
-<%--    // Lấy redirect_uri từ URL nếu có--%>
-<%--    const params = new URLSearchParams(window.location.search);--%>
-<%--    const redirectUri = params.get("redirect_uri");--%>
-<%--    if (redirectUri) {--%>
-<%--        document.getElementById("redirect_uri").value = redirectUri;--%>
-<%--    }--%>
-<%--</script>--%>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -54,11 +58,13 @@
 
         $('#LOGIN_BTN').click(function () {
             $("#loginFail").hide();
+            $("#loadingSpinner").show();
 
             const username = $('#USERNAME').val();
             const password = $('#PASSWORD').val();
 
             if (!username || !password) {
+                $("#loadingSpinner").hide();
                 $("#loginFail").text("Vui lòng nhập đầy đủ thông tin").show();
                 return;
             }
@@ -74,6 +80,7 @@
                 contentType: 'application/json',
                 data: JSON.stringify(requestData),
                 success: function (res) {
+                    $("#loadingSpinner").hide();
                     if (res.status === true && res.data && res.data.token) {
                         const accessToken = res.data.token;
                         const userName = res.data.user.userName;
@@ -83,6 +90,7 @@
                     }
                 },
                 error: function () {
+                    $("#loadingSpinner").hide();
                     $("#loginFail").text("Sai tài khoản hoặc mật khẩu").show();
                 }
             });

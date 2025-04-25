@@ -37,6 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/login-auth-web",
             "/favicon.ico",
             "/login",
+            "/logout-web",
             "/assets/css/icons.min.css",
             "/assets/css/app-modern-dark.min.css",
             "/assets/images/logo.png",
