@@ -59,8 +59,14 @@
 
 <script>
     $(document).ready(function () {
+
+        const serverData = {
+            uri: "<c:out value='${redirect_uri}'/>",
+        };
+        console.log(serverData.uri)
+
         const urlParams = new URLSearchParams(window.location.search);
-        const redirectUri = urlParams.get('redirect_uri') || "http://localhost:3006/dashboard";
+        const redirectUri = urlParams.get('redirect_uri') || serverData.uri;
         $('#REDIRECT_URI').val(redirectUri);
 
         $('#LOGIN_BTN').click(function () {
@@ -91,6 +97,7 @@
                     if (res.status === true && res.data && res.data.token) {
                         const accessToken = res.data.token;
                         const userName = res.data.user.userName;
+                        console.log("Đăng nhập thành công với token: " + accessToken);
                         window.location.href = redirectUri + "?access_token=" + encodeURIComponent(accessToken) + "&userName=" + encodeURIComponent(userName);
                     } else {
                         $("#loginFail").text("Đăng nhập không thành công.").show();

@@ -8,6 +8,7 @@ import com.cudev.demo_auth.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -15,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ValidationException;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -28,12 +32,24 @@ public class AuthViewController {
 
 
     @RequestMapping("/login-auth-web")
-    public String loginCheckUser(@RequestParam(value = "redirect_uri", required = false) String redirectUri, HttpServletRequest request,
+    public String loginCheckUser(@RequestParam(value = "redirect_uri", required = false) String redirectUri, HttpServletRequest request, Model model,
                                  HttpServletResponse response) {
 
-        if (redirectUri == null || redirectUri.isEmpty()) {
+        if (redirectUri == null || redirectUri.isEmpty() || CookieUtil.getCookieByName(SecurityConstants.REDIRECT_URI_KEY, request) != null) {
             redirectUri = CookieUtil.getCookieByName(SecurityConstants.REDIRECT_URI_KEY, request);
+        }else {
+            Map<String, Object> data = new HashMap<>();
+            data.put("redirect_uri", "http://localhost:3006/home");
+            model.addAllAttributes(data);
         }
+
+        String preAction = request.getParameter("pre_action");
+        if(preAction != null) {
+            CookieUtil.deleteCookie(request, response, SecurityConstants.ACCESS_TOKEN_KEY);
+            CookieUtil.deleteCookie(request, response, SecurityConstants.REDIRECT_URI_KEY);
+        }
+
+        System.out.println(redirectUri);
 
         Optional<Cookie> cookie = CookieUtil.getCookie(request, SecurityConstants.ACCESS_TOKEN_KEY);
 

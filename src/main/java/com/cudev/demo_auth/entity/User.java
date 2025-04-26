@@ -42,4 +42,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "ID_ROLE")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_app",
+            joinColumns = @JoinColumn(name = "ID_USER"),
+            inverseJoinColumns = @JoinColumn(name = "id_app")
+    )
+    private Set<Apps> apps = new HashSet<>();
 }

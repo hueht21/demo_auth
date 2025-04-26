@@ -4,7 +4,6 @@ import com.cudev.demo_auth.util.CustomOAuth2FailureHandler;
 import com.cudev.demo_auth.util.CustomOAuth2SuccessHandler;
 import com.cudev.demo_auth.util.CustomAccessDeniedHandler;
 import com.cudev.demo_auth.util.CustomAuthenticationEntryPoint;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

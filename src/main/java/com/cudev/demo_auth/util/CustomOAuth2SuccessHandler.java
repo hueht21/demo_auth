@@ -6,6 +6,7 @@ import com.cudev.demo_auth.dto.UserForLogin;
 import com.cudev.demo_auth.entity.Role;
 import com.cudev.demo_auth.entity.User;
 import com.cudev.demo_auth.repository.UserRepository;
+import com.cudev.demo_auth.service.AppService;
 import com.cudev.demo_auth.service.AuthenticationService;
 import com.cudev.demo_auth.service.MenuService;
 import com.cudev.demo_auth.service.UserService;
@@ -42,6 +43,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private AppService appService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -65,8 +69,10 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
                 .distinct()
                 .toList();
 
+
+        Set<String> listAppUser = appService.getListCodeAppByUser(user.getId());
         // Sinh JWT token
-        String jwt = jwtService.generateToken(user.getUserName(), userForLogin.getListRoles().stream().toList(), menuNames);
+        String jwt = jwtService.generateToken(user.getUserName(), userForLogin.getListRoles().stream().toList(), menuNames, listAppUser);
 
         CookieUtil.addCookie(response, SecurityConstants.ACCESS_TOKEN_KEY, jwt);
 

@@ -5,6 +5,7 @@ import com.cudev.demo_auth.dto.UserForLogin;
 import com.cudev.demo_auth.model.LoginRequest;
 import com.cudev.demo_auth.model.LoginResponse;
 import com.cudev.demo_auth.model.ReponseObject;
+import com.cudev.demo_auth.repository.AppRepository;
 import com.cudev.demo_auth.repository.UserRepository;
 import com.cudev.demo_auth.util.JWTUtil;
 import com.cudev.demo_auth.entity.Role;
@@ -38,7 +39,8 @@ public class AuthenticationService {
     @Autowired
     private MenuService menuService;
 
-
+    @Autowired
+    private AppService appService;
 
     public ReponseObject verify(LoginRequest request) {
 
@@ -58,12 +60,13 @@ public class AuthenticationService {
                             .distinct()
                             .toList();
 
-                    LoginResponse loginResponse = new LoginResponse(jwtUtil.generateToken(request.getUsername(), userForLogin.getListRoles().stream().toList(),menuNames), userForLogin);
+                    Set<String> listAppUser = appService.getListCodeAppByUser(userRepo.getId());
+
+                    LoginResponse loginResponse = new LoginResponse(jwtUtil.generateToken(request.getUsername(), userForLogin.getListRoles().stream().toList(),menuNames, listAppUser), userForLogin);
                     return new ReponseObject(true, "Login thành công", loginResponse);
                 }else {
                     return new ReponseObject(false, "Tài khoản đã bị khoá", null);
                 }
-
             }
 
         } catch (BadCredentialsException e) {

@@ -19,10 +19,11 @@ import java.util.function.Function;
 public class JWTUtil {
     private String secretkey = "v6s3pYmVhSePbK+G(D?A/x8u5r1nXjUg";
 
-    public String generateToken(String username, List<String> roles, List<String> menus) {
+    public String generateToken(String username, List<String> roles, List<String> menus, Set<String> listApps) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
         claims.put("menus", menus);
+        claims.put("apps", listApps);
 
         return Jwts.builder()
                 .claims()
