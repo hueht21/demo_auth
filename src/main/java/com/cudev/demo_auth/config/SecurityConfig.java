@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 new AntPathRequestMatcher("/api/login-web"),
                                 new AntPathRequestMatcher("/api/login"),
+                                new AntPathRequestMatcher("/key-manager/**"),
                                 new AntPathRequestMatcher("/login"),
                                 new AntPathRequestMatcher("/logout-web"),
                                 new AntPathRequestMatcher("/api/login-web"),
@@ -118,25 +119,4 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
-//        var configuration = new org.springframework.web.cors.CorsConfiguration();
-//
-//        // Cập nhật origin để chỉ định domain frontend
-//        configuration.setAllowedOrigins(List.of("http://localhost:3006", "http://localhost:3000")); // Thay đổi domain frontend của bạn
-//
-//        // Cấu hình các phương thức HTTP được phép
-//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//
-//        // Cho phép tất cả các headers
-//        configuration.setAllowedHeaders(List.of("*"));
-//
-//        // Cho phép gửi thông tin xác thực (cookies, headers Authorization...)
-//        configuration.setAllowCredentials(true);
-//
-//        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho tất cả các endpoint
-//        return source;
-//    }
 }

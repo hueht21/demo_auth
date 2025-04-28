@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.io.IOException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -12,33 +13,41 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JWTUtil {
-    private String secretkey = "v6s3pYmVhSePbK+G(D?A/x8u5r1nXjUg";
-
     public String generateToken(String username, List<String> roles, List<String> menus, Set<String> listApps) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
         claims.put("menus", menus);
         claims.put("apps", listApps);
 
-        return Jwts.builder()
-                .claims()
-                .add(claims)
-                .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 2 * 60 * 1000))
-                .and()
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
+        try {
+            String privateKeys = null;
+            privateKeys = RSAUtil.getPrivateKey();
+            PrivateKey privateKey = RSAUtil.decodePrivateKey(privateKeys);
 
+            return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 2 * 60 * 1000)).and().signWith(privateKey, SignatureAlgorithm.RS256).compact();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secretkey.getBytes(StandardCharsets.UTF_8));
+    private String getKeyPublic() {
+
+        String publicKey = null;
+        try {
+            publicKey = RSAUtil.getPublicKey();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return publicKey;
     }
 
     public String extractUserName(String token) {
@@ -50,12 +59,21 @@ public class JWTUtil {
         final Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
     }
+
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+
+        try {
+            PublicKey key = RSAUtil.decodePublicKey(getKeyPublic());
+
+            return Jwts.parser().setSigningKey(
+                            key)
+                    .build().
+                    parseSignedClaims(token)
+                    .getBody();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

@@ -32,6 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
             "/api/auth/validate",
             "/api/login",
             "/api/logout",
+            "/key-manager/get-public-key",
             "/login-web",
             "/api/login-web",
             "/login-auth-web",
