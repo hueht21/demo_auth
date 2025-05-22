@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cudev.demo_auth.dao.e_com.product.ProductDao">
+
+    <select id="getAllProduct" resultType="map" parameterType="map">
+        SELECT p.ID_PRODUCT AS idProduct, p.NAME_PRODUCT AS nameProduct,
+               p.UNIT_PRICE AS unitPrice, p.PROMOTIONAL_PRICE AS promotionalPrice ,
+               p.`DESCRIBE`, p.LINK_PRODUCT AS linkProduct,
+               T2.NAME_CATEGORY AS nameCategory, T2.ID_CATEGORY AS idCategory
+        FROM product p
+        LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
+        <if test="offset != null">
+            LIMIT 10 OFFSET #{offset}
+        </if>
+
+    </select>
+
+    <select id="getDetailProduct" resultType="map" parameterType="map">
+        SELECT p.ID_PRODUCT AS idProduct, p.NAME_PRODUCT AS nameProduct,
+               p.UNIT_PRICE AS unitPrice, p.PROMOTIONAL_PRICE AS promotionalPrice ,
+               p.`DESCRIBE`, p.LINK_PRODUCT AS linkProduct,
+               T2.NAME_CATEGORY AS nameCategory, T2.ID_CATEGORY AS idCategory
+        FROM product p
+                 LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
+    </select>
+
+</mapper>

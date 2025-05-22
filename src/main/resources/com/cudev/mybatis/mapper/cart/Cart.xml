@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cudev.demo_auth.dao.e_com.cart.CartDao">
+    <insert id="insertCart" parameterType="map">
+        INSERT INTO CART (ID_PRODUCT, NUMBER, ID_CUS) VALUE (#{idProduct}, #{number}, #{idCus})
+    </insert>
+
+    <select id="getListCartUser" resultType="map" parameterType="Long">
+        SELECT T1.ID_CART AS idCart, T1.ID_PRODUCT AS idProduct, P1.NAME_PRODUCT AS nameProduct,
+               P1.PROMOTIONAL_PRICE AS unitPrice, T1.`NUMBER` AS numberCart, (P1.PROMOTIONAL_PRICE * T1.`NUMBER`) AS total
+        FROM CART T1
+        LEFT JOIN PRODUCT P1 ON P1.ID_PRODUCT = T1.ID_PRODUCT
+        WHERE T1.ID_CUS = #{userId}
+    </select>
+
+    <update id="updateCartNumber" parameterType="map">
+        UPDATE CART SET NUMBER  = #{numberCart} WHERE ID_CART = #{idCart}
+    </update>
+
+    <select id="getNumberCart" resultType="Long" parameterType="Long">
+
+        SELECT c.`NUMBER` FROM CART c WHERE c.ID_CART = #{idCart}
+
+    </select>
+
+    <delete id="deleteCart" parameterType="Long" >
+        DELETE FROM CART WHERE ID_CART = #{idCart}
+    </delete>
+</mapper>

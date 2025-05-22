@@ -31,7 +31,7 @@ public class JWTUtil {
             privateKeys = RSAUtil.getPrivateKey();
             PrivateKey privateKey = RSAUtil.decodePrivateKey(privateKeys);
 
-            return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 2 * 60 * 1000)).and().signWith(privateKey, SignatureAlgorithm.RS256).compact();
+            return Jwts.builder().claims().add(claims).subject(username).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + 10 * 60 * 1000)).and().signWith(privateKey, SignatureAlgorithm.RS256).compact();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

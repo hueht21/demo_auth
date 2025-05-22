@@ -40,7 +40,8 @@ public class JwtFilter extends OncePerRequestFilter {
             "/login",
             "/logout-web",
             "/login/oauth2/code/google",
-            "/assets/css/login.css"
+            "/assets/css/login.css",
+            "/api/product/get-all-product"
     );
 
     @Override

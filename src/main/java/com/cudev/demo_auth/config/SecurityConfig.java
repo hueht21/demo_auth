@@ -66,8 +66,12 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/favicon.ico"),
                                 new AntPathRequestMatcher("/login-auth-web"),
                                 new AntPathRequestMatcher("/login/oauth2/code/google"),
-                                new AntPathRequestMatcher("/assets/**")
+                                new AntPathRequestMatcher("/assets/**"),
+                                new AntPathRequestMatcher("/api/product/get-all-product")
                         ).permitAll()
+                        .requestMatchers(
+                                new AntPathRequestMatcher("/api/cart/**")
+                        ).hasAnyAuthority("ROLE_CUS")
                         .anyRequest().authenticated())
 
                 .exceptionHandling(exception -> exception
@@ -77,8 +81,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class).
-                oauth2Login(oauth -> oauth
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth -> oauth
                         .successHandler(customOAuth2SuccessHandler)
                         .failureHandler(oAuth2FailureHandler)
                 ).
