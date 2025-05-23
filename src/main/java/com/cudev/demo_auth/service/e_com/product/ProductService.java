@@ -19,8 +19,10 @@ public class ProductService {
         Map<String, Object> paramsRequest = new HashMap<>();
 
         int page = Integer.parseInt(param.get("page").toString());
+//        int idCategory = Integer.parseInt(param.get("idCategory").toString());
 
         paramsRequest.put("offset", (page) * 10);
+        paramsRequest.put("idCategory", param.get("idCategory"));
 
         Map<String, Object> result = new HashMap<>();
         result.put("page",Integer.parseInt(param.get("page").toString()));

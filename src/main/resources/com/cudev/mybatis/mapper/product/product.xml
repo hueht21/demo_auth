@@ -11,6 +11,9 @@
                T2.NAME_CATEGORY AS nameCategory, T2.ID_CATEGORY AS idCategory
         FROM product p
         LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
+        <if test="idCategory != null">
+            WHERE p.ID_CATEGORY = #{idCategory}
+        </if>
         <if test="offset != null">
             LIMIT 10 OFFSET #{offset}
         </if>
@@ -25,5 +28,14 @@
         FROM product p
                  LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
     </select>
-
+    
+    <select id="getProductById" resultType="map" parameterType="Integer">
+        SELECT p.ID_PRODUCT AS idProduct, p.NAME_PRODUCT AS nameProduct,
+               p.UNIT_PRICE AS unitPrice, p.PROMOTIONAL_PRICE AS promotionalPrice ,
+               p.`DESCRIBE`, p.LINK_PRODUCT AS linkProduct,
+               T2.NAME_CATEGORY AS nameCategory, T2.ID_CATEGORY AS idCategory
+        FROM product p
+                 LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
+        WHERE p.ID_PRODUCT = #{idProduct}
+    </select>
 </mapper>

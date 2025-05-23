@@ -8,4 +8,6 @@ import java.util.Map;
 @Mapper
 public interface ProductDao {
     List<Map<String, Object>> getAllProduct(Map<String, Object> params);
+
+    Map<String, Object> getProductById(int id);
 }
