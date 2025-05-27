@@ -10,4 +10,6 @@ public interface ProductDao {
     List<Map<String, Object>> getAllProduct(Map<String, Object> params);
 
     Map<String, Object> getProductById(int id);
+
+    int getTotalProduct(Map<String, Object> params);
 }

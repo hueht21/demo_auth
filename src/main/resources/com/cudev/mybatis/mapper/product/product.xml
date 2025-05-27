@@ -11,7 +11,7 @@
                T2.NAME_CATEGORY AS nameCategory, T2.ID_CATEGORY AS idCategory
         FROM product p
         LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
-        <if test="idCategory != null">
+        <if test="idCategory != null and idCategory != ''">
             WHERE p.ID_CATEGORY = #{idCategory}
         </if>
         <if test="offset != null">
@@ -37,5 +37,15 @@
         FROM product p
                  LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
         WHERE p.ID_PRODUCT = #{idProduct}
+    </select>
+
+    <select id="getTotalProduct" resultType="Integer" parameterType="map" >
+        SELECT COUNT(*) as totalProduct
+        FROM product p
+        LEFT JOIN CATEGORY T2 ON T2.ID_CATEGORY = p.ID_CATEGORY
+        <if test="idCategory != null and idCategory != ''">
+            WHERE p.ID_CATEGORY = #{idCategory}
+        </if>
+
     </select>
 </mapper>

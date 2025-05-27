@@ -21,13 +21,17 @@ public class ProductService {
         int page = Integer.parseInt(param.get("page").toString());
 //        int idCategory = Integer.parseInt(param.get("idCategory").toString());
 
-        paramsRequest.put("offset", (page) * 10);
+        if(page == 0) {
+            page = 1;
+        }
+
+        paramsRequest.put("offset", (page -1) * 10);
         paramsRequest.put("idCategory", param.get("idCategory"));
 
         Map<String, Object> result = new HashMap<>();
         result.put("page",Integer.parseInt(param.get("page").toString()));
         result.put("product",productDao.getAllProduct(paramsRequest));
-        result.put("total",productDao.getAllProduct(paramsRequest).size());
+        result.put("total",productDao.getTotalProduct(paramsRequest));
         return new ReponseObject(true, "", result);
     }
 
