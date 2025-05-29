@@ -5,7 +5,9 @@ import com.cudev.demo_auth.model.ReponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,6 +35,26 @@ public class ProductService {
         result.put("product",productDao.getAllProduct(paramsRequest));
         result.put("total",productDao.getTotalProduct(paramsRequest));
         return new ReponseObject(true, "", result);
+    }
+
+    public ReponseObject getProductById(int id) {
+        Map<String, Object> product = productDao.getProductById(id);
+        if (product == null) {
+            return new ReponseObject(false, "Product not found", null);
+        }
+
+        List<Map<String, String>> imgDetailProduct = productDao.getImgDetailProduct(id);
+
+        List<String> imgList = new ArrayList<>();
+
+        for(Map<String, String> mapStr : imgDetailProduct) {
+            String img = mapStr.get("linkImgDetail");
+            if (img != null && !img.isEmpty()) {
+                imgList.add(img);
+            }
+        }
+        product.put("imgDetailProduct",imgList);
+        return new ReponseObject(true, "", product);
     }
 
 }

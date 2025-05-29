@@ -22,4 +22,9 @@ public class ProductController {
     public ResponseEntity<ReponseObject> getAllProduct(@RequestParam Map<String, Object> params) {
         return ResponseEntity.ok(productService.getAllProduct(params));
     }
+
+    @GetMapping("/get-detail-product")
+    public ResponseEntity<ReponseObject> getProductById(@RequestParam int id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 }

@@ -48,4 +48,12 @@
         </if>
 
     </select>
+
+
+    <select id="getImgDetailProduct" resultType="map" parameterType="Integer" >
+        SELECT p.LINK_IMG_PRODUCT AS linkImgDetail FROM img_detail_product p
+        <if test="idProduct != null and idProduct != ''">
+            WHERE p.ID_PRODUCT = #{idProduct}
+        </if>
+    </select>
 </mapper>

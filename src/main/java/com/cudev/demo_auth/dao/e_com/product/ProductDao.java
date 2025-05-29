@@ -12,4 +12,6 @@ public interface ProductDao {
     Map<String, Object> getProductById(int id);
 
     int getTotalProduct(Map<String, Object> params);
+
+    List<Map<String, String>> getImgDetailProduct(int idProduct);
 }
